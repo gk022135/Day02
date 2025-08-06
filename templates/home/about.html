@@ -1,0 +1,24 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+<h2>About Django Development</h2>
+<p>
+    Django is a high-level Python web framework that encourages rapid development
+    and clean, pragmatic design. It handles much of the complexity of web development,
+    so you can focus on writing your app without reinventing the wheel.
+</p>
+<p>
+    Key features include:
+<ul>
+    <li>Built-in admin interface</li>
+    <li>Robust ORM (Object-Relational Mapping)</li>
+    <li>Security features against common web attacks</li>
+    <li>Scalability for large projects</li>
+</ul>
+<div class="col-6" style="margin: 10px; border-radius: 10px; background-color: darkblue; color: white;">
+    {% for i in list_data %}
+    <h1>{{ i }}</h1>
+    {% endfor %}
+</div>
+</p>
+{% endblock %}
