@@ -16,3 +16,7 @@ def about(request):
 
 def home(request):
     return render(request, 'home/home.html')
+
+
+def testing():
+    print("what is going on bro how the josh")
