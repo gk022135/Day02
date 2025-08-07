@@ -20,3 +20,7 @@ def home(request):
 
 def testing():
     print("what is going on bro how the josh")
+
+#hello world this commit is done by gaurav branch okk 
+def gaurav():
+    print("gaurav branch is working on bro !!")
