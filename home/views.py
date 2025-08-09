@@ -27,7 +27,7 @@ def home(request):
     phone="9876543210",
     address="Bihar, India"
     )
-    # entry.save()
+    entry.save()
     print("hello the entry us  made", entry.email)
     return render(request, 'home/home.html')
 
@@ -53,3 +53,11 @@ def insert_data(request):
         address="Patna"
     )
     return HttpResponse("Data inserted successfully!")
+
+def show_db_data(request):
+    # Access request if needed, e.g., request.method
+    try:
+        x = FirstTable.objects.get(name="Gaurav")
+        return HttpResponse(f"This is your data: {x}")
+    except FirstTable.DoesNotExist:
+        return HttpResponse("No data found for Gaurav.")
