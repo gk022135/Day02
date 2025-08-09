@@ -57,7 +57,29 @@ def insert_data(request):
 def show_db_data(request):
     # Access request if needed, e.g., request.method
     try:
-        x = FirstTable.objects.get(name="Gaurav")
-        return HttpResponse(f"This is your data: {x}")
+        x = FirstTable.objects.get(id=1)
+        return HttpResponse(f"This is your data: name: {x.name}, email: {x.email}")
     except FirstTable.DoesNotExist:
         return HttpResponse("No data found for Gaurav.")
+    
+
+def validation(request):
+    try:
+        if(request.method == "POST"):
+            data = request.data
+            if not data:
+                return HttpResponse("hello bro wrong field provided")
+        x = FirstTable.objects.get(name = "Gaurav")
+        if data.name != x.name:
+            return HttpResponse("chal bhai rahne de nahi hoga")
+        
+        if data.email == x.email:
+            print("user already exists try with some other id bro please !!")
+            return HttpResponse("try again with new user id bro please").json({
+                "status" : 400,
+                "message" : "hello user already exists"
+            })
+    except:
+        print("error is occured bro !!", error)
+
+        
