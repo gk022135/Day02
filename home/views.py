@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
+from home.models import FirstTable, Cars
+
+# def makeEntry_to_db(request):
+    
+
 # Create your views here.
 def base(request):
     return render(request,'home/base.html')
@@ -15,6 +20,15 @@ def about(request):
     return render(request, 'home/about.html', context)
 
 def home(request):
+    entry = Cars(
+    name="Gaurav",
+    email="gaurav@example.com",
+    age=21,
+    phone="9876543210",
+    address="Bihar, India"
+    )
+    entry.save()
+    print("hello the entry us  made", entry.email)
     return render(request, 'home/home.html')
 
 
@@ -25,3 +39,25 @@ def testing():
 def gaurav():
     print("gaurav branch is working on bro !!")
     print("testing is done for making commit from one branch and merge with main branch")
+
+
+
+    
+
+def insert_data(request):
+    FirstTable.objects.create(
+        name="Gaurav",
+        email="gaurav@example.com",
+        age=21,
+        phone="9876543210",
+        address="Patna"
+    )
+    return HttpResponse("Data inserted successfully!")
+
+def show_db_data(request):
+    # Access request if needed, e.g., request.method
+    try:
+        x = FirstTable.objects.get(name="Gaurav")
+        return HttpResponse(f"This is your data: {x}")
+    except FirstTable.DoesNotExist:
+        return HttpResponse("No data found for Gaurav.")

@@ -18,11 +18,15 @@ from django.contrib import admin
 from django.urls import path
 from home.views import hello, about, home, base
 
+from home.views import insert_data
+
 urlpatterns = [
      path('',base),
     path('admin/', admin.site.urls),
     path('services/', home),
     path('about/',about),
+    path('insert/', insert_data),
+
    
     
 ]
