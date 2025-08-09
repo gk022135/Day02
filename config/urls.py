@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from home.views import hello, about, home, base, show_db_data
+from home.views import hello, about, home, base, show_db_data, validation
 
 from home.views import insert_data
 
@@ -26,5 +26,6 @@ urlpatterns = [
     path('services/', home),
     path('about/',about),
     path('insert/', insert_data),
-    path('get-data/',show_db_data)
+    path('get-data/',show_db_data),
+    path('post', validation)
 ]

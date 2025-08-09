@@ -1,7 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+
+from django.views.decorators.csrf import csrf_exempt
 
 from home.models import FirstTable, Cars
+
+import json
 
 # def makeEntry_to_db(request):
     
@@ -63,23 +67,70 @@ def show_db_data(request):
         return HttpResponse("No data found for Gaurav.")
     
 
+
+@csrf_exempt
 def validation(request):
     try:
-        if(request.method == "POST"):
-            data = request.data
+        if request.method == "POST":
+            # Parse incoming JSON body
+            try:
+                data = json.loads(request.body)
+                print("data comes from frontend is: ", data)
+            except json.JSONDecodeError:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Invalid JSON format"
+                }, status=400)
+
+            # Empty body check
             if not data:
-                return HttpResponse("hello bro wrong field provided")
-        x = FirstTable.objects.get(name = "Gaurav")
-        if data.name != x.name:
-            return HttpResponse("chal bhai rahne de nahi hoga")
-        
-        if data.email == x.email:
-            print("user already exists try with some other id bro please !!")
-            return HttpResponse("try again with new user id bro please").json({
-                "status" : 400,
-                "message" : "hello user already exists"
+                return JsonResponse({
+                    "success": False,
+                    "message": "No data provided"
+                }, status=400)
+
+            # Get the existing record
+            try:
+                x = FirstTable.objects.get(id =1)
+                print(f"data from database name: {x.name}, email : {x.email}")
+            except FirstTable.DoesNotExist:
+                return JsonResponse({
+                    "success": False,
+                    "message": "User not found"
+                }, status=404)
+
+            # Validate name
+            if data.get("username") != x.name:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Name does not match"
+                }, status=400)
+
+            # Validate email
+            if data.get("email") == x.email:
+                return JsonResponse({
+                    "success": False,
+                    "message": "User already exists with this email"
+                }, status=400)
+
+            # If passed all validations
+            return JsonResponse({
+                "success": True,
+                "message": "Validation passed"
             })
-    except:
-        print("error is occured bro !!", error)
+
+        # If request is not POST
+        return JsonResponse({
+            "success": False,
+            "message": "Only POST requests are allowed"
+        }, status=405)
+
+    except Exception as e:
+        print("Error occurred:", e)
+        return JsonResponse({
+            "success": False,
+            "message": "Internal server error"
+        }, status=500)
+
 
         
