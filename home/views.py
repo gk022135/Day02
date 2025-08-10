@@ -1,7 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+
+from django.views.decorators.csrf import csrf_exempt
 
 from home.models import FirstTable, Cars
+from home.controllers.test import test
+
+import json
 
 # def makeEntry_to_db(request):
     
@@ -12,7 +17,7 @@ def base(request):
 
 def hello(request):
     # return HttpResponse("<h1>hello this will working finse</h1>")
-    return render(request, 'home/base.html')
+    return render(request, 'home/signup.html')
 
 def about(request):
     data = ["gaurav", "saurav", "sachin"]
@@ -63,23 +68,127 @@ def show_db_data(request):
         return HttpResponse("No data found for Gaurav.")
     
 
+
+@csrf_exempt
 def validation(request):
     try:
-        if(request.method == "POST"):
-            data = request.data
-            if not data:
-                return HttpResponse("hello bro wrong field provided")
-        x = FirstTable.objects.get(name = "Gaurav")
-        if data.name != x.name:
-            return HttpResponse("chal bhai rahne de nahi hoga")
-        
-        if data.email == x.email:
-            print("user already exists try with some other id bro please !!")
-            return HttpResponse("try again with new user id bro please").json({
-                "status" : 400,
-                "message" : "hello user already exists"
-            })
-    except:
-        print("error is occured bro !!", error)
+        if request.method == "POST":
+            # Parse incoming JSON body
+            try:
+                data = json.loads(request.body)
+                print("data comes from frontend is: ", data)
+            except json.JSONDecodeError:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Invalid JSON format"
+                }, status=400)
 
-        
+            # Empty body check
+            if not data:
+                return JsonResponse({
+                    "success": False,
+                    "message": "No data provided"
+                }, status=400)
+
+            # Get the existing record
+            try:
+                x = FirstTable.objects.get(id =1)
+                print(f"data from database name: {x.name}, email : {x.email}")
+            except FirstTable.DoesNotExist:
+                return JsonResponse({
+                    "success": False,
+                    "message": "User not found"
+                }, status=404)
+
+            # Validate name
+            if data.get("username") != x.name:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Name does not match"
+                }, status=400)
+
+            # Validate email
+            if data.get("email") == x.email:
+                return JsonResponse({
+                    "success": False,
+                    "message": "User already exists with this email"
+                }, status=400)
+
+            # If passed all validations
+            return JsonResponse({
+                "success": True,
+                "message": "Validation passed"
+            })
+
+        # If request is not POST
+        return JsonResponse({
+            "success": False,
+            "message": "Only POST requests are allowed"
+        }, status=405)
+
+    except Exception as e:
+        print("Error occurred:", e)
+        return JsonResponse({
+            "success": False,
+            "message": "Internal server error"
+        }, status=500)
+
+
+async def signup(request):
+    try:
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body)
+                print("Data received from frontend:", data)
+
+                if not all(k in data for k in ["username", "email", "contact", "password"]):
+                    return JsonResponse({
+                        "success": False,
+                        "message": "Missing required fields"
+                    }, status=400)
+
+                # Check if user already exists
+                user_data = await FirstTable.objects.filter(email=data["email"]).afirst()
+                if user_data:
+                    return JsonResponse({
+                        "success": False,
+                        "message": "User already exists"
+                    }, status=400)
+
+                # Create new user
+                response = await FirstTable.objects.acreate(
+                    username=data["username"],
+                    email=data["email"],
+                    contact=data["contact"],
+                    password=data["password"]
+                )
+
+                if response:
+                    return JsonResponse({
+                        "success": True,
+                        "message": "Signup successful!"
+                    }, status=200)
+
+            except Exception as e:
+                print("Exception in request fetch:", e)
+                return JsonResponse({
+                    "success": False,
+                    "message": "An exception occurred"
+                }, status=500)
+
+        else:
+            return JsonResponse({
+                "success": False,
+                "message": "Only POST requests are allowed"
+            }, status=405)
+
+    except Exception as e:
+        print("Internal error:", e)
+        return JsonResponse({
+            "success": False,
+            "message": "Internal server error"
+        }, status=500)
+
+
+def folderr(request):
+    return test(request)
