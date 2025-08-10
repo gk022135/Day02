@@ -23,3 +23,8 @@ class Cars(models.Model):
     def __str__(self):
         return self.name
 
+class user_data(models.Model):
+    username = models.CharField(max_length=100)
+    email = models.EmailField()
+    contact = models.BigIntegerField()
+    password = models.CharField()

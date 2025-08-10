@@ -16,7 +16,7 @@ def base(request):
 
 def hello(request):
     # return HttpResponse("<h1>hello this will working finse</h1>")
-    return render(request, 'home/base.html')
+    return render(request, 'home/signup.html')
 
 def about(request):
     data = ["gaurav", "saurav", "sachin"]
@@ -133,4 +133,33 @@ def validation(request):
         }, status=500)
 
 
-        
+def signup(request):
+    try:
+        # Implement signup logic here
+        if request.method == "POST":
+            # your if logic here 
+            try:
+                data = json.loads(request.body)
+                print("data receveid from frontend is:", data);
+                if not data:
+                    return JsonResponse({
+                        "success" : False,
+                        "message" : "data not recevied bro !!"
+                    }, status = 400)
+            except Exception as e:
+                print("the exception in request fetch:",e)
+                return JsonResponse({
+                    "success" : False,
+                    "messaage" : "an exception ocured check console"
+                }, status=500)
+        else:
+            return JsonResponse({
+                "success" : False,
+                "message" : "not an post request bro !!"
+            })
+    except Exception as e:
+        print("error  occurred:",e)
+        return JsonResponse({
+            "success" : False,
+            "message" : "internal server error"
+        },status = 500)

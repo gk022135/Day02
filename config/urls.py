@@ -27,5 +27,6 @@ urlpatterns = [
     path('about/',about),
     path('insert/', insert_data),
     path('get-data/',show_db_data),
-    path('post', validation)
+    path('post', validation),
+    path('sign/', hello)
 ]
