@@ -4,6 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from home.models import FirstTable, Cars
+from home.controllers.test import test
 
 import json
 
@@ -133,33 +134,61 @@ def validation(request):
         }, status=500)
 
 
-def signup(request):
+async def signup(request):
     try:
-        # Implement signup logic here
         if request.method == "POST":
-            # your if logic here 
             try:
                 data = json.loads(request.body)
-                print("data receveid from frontend is:", data);
-                if not data:
+                print("Data received from frontend:", data)
+
+                if not all(k in data for k in ["username", "email", "contact", "password"]):
                     return JsonResponse({
-                        "success" : False,
-                        "message" : "data not recevied bro !!"
-                    }, status = 400)
+                        "success": False,
+                        "message": "Missing required fields"
+                    }, status=400)
+
+                # Check if user already exists
+                user_data = await FirstTable.objects.filter(email=data["email"]).afirst()
+                if user_data:
+                    return JsonResponse({
+                        "success": False,
+                        "message": "User already exists"
+                    }, status=400)
+
+                # Create new user
+                response = await FirstTable.objects.acreate(
+                    username=data["username"],
+                    email=data["email"],
+                    contact=data["contact"],
+                    password=data["password"]
+                )
+
+                if response:
+                    return JsonResponse({
+                        "success": True,
+                        "message": "Signup successful!"
+                    }, status=200)
+
             except Exception as e:
-                print("the exception in request fetch:",e)
+                print("Exception in request fetch:", e)
                 return JsonResponse({
-                    "success" : False,
-                    "messaage" : "an exception ocured check console"
+                    "success": False,
+                    "message": "An exception occurred"
                 }, status=500)
+
         else:
             return JsonResponse({
-                "success" : False,
-                "message" : "not an post request bro !!"
-            })
+                "success": False,
+                "message": "Only POST requests are allowed"
+            }, status=405)
+
     except Exception as e:
-        print("error  occurred:",e)
+        print("Internal error:", e)
         return JsonResponse({
-            "success" : False,
-            "message" : "internal server error"
-        },status = 500)
+            "success": False,
+            "message": "Internal server error"
+        }, status=500)
+
+
+def folderr(request):
+    return test(request)

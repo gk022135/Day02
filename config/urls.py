@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from home.views import hello, about, home, base, show_db_data, validation
 
-from home.views import insert_data
+from home.views import insert_data, folderr
 
 urlpatterns = [
      path('',base),
@@ -28,5 +28,6 @@ urlpatterns = [
     path('insert/', insert_data),
     path('get-data/',show_db_data),
     path('post', validation),
-    path('sign/', hello)
+    path('sign/', hello),
+    path('test/', folderr)
 ]
