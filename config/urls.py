@@ -29,5 +29,6 @@ urlpatterns = [
     path('get-data/',show_db_data),
     path('post', validation),
     path('sign/', hello),
-    path('test/', folderr)
+    path('test/', folderr),
+    path('site-admin-view/', admin.site.urls)
 ]

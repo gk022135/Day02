@@ -28,3 +28,8 @@ class user_data(models.Model):
     email = models.EmailField()
     contact = models.BigIntegerField()
     password = models.CharField()
+
+class requests_logs(models.Model):
+    requests_logs = models.CharField()
+    requests_mehtod = models.CharField()
+    request_type = models.CharField()
