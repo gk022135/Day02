@@ -28,3 +28,11 @@ class user_data(models.Model):
     email = models.EmailField()
     contact = models.BigIntegerField()
     password = models.CharField()
+
+class RequestLog(models.Model):
+    request_log = models.CharField(max_length=255)
+    request_method = models.CharField(max_length=50)
+    request_type = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.request_method} - {self.request_type}"
