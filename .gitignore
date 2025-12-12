@@ -1,0 +1,65 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+*.log
+
+# === Virtual Environment ===
+venv/
+ENV/
+env/
+.gkenv/
+.gkenv310/
+
+# === Django ===
+db.sqlite3
+*.sqlite3
+
+# Prevent committing secret keys or environment configs
+.env
+*.env
+
+# === Django Migrations (keep __init__.py) ===
+*/migrations/* 
+!*/migrations/__init__.py
+
+# === Static & Media ===
+static/
+staticfiles/
+media/
+uploads/
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.gif
+
+# === Cache ===
+*.DS_Store
+*.swp
+*.tmp
+*.bak
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.code-workspace
+
+# === Compiled assets ===
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# === Python Packaging ===
+dist/
+build/
+.eggs/
+
+# === Miscellaneous ===
+Thumbs.db
+desktop.ini
